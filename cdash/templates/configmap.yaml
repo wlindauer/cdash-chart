@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cdash.fullname" . }}
+  labels:
+    {{- include "cdash.labels" . | nindent 4 }}
+data:
+  CDASH_CONFIG: |-
+  {{- if .Values.mariadb.enabled }}
+    $CDASH_DB_HOST = '{{ include "mariadb.fullname" . }}';
+  {{- else }}
+    $CDASH_DB_HOST = {{ .Values.externalDatabase.host | quote }};
+  {{- end }}
+  {{- if .Values.mariadb.enabled }}
+    $CDASH_DB_PORT = {{ .Values.mariadb.service.port | quote }};
+  {{- else }}
+    $CDASH_DB_PORT = {{ .Values.externalDatabase.port | quote }};
+  {{- end }}
+  {{- if .Values.mariadb.enabled }}
+    $CDASH_DB_NAME = {{ .Values.mariadb.db.name | quote }};
+  {{- else }}
+    $CDASH_DB_NAME = {{ .Values.externalDatabase.database | quote }};
+  {{- end }}
+  {{- if .Values.mariadb.enabled }}
+    $CDASH_DB_LOGIN = {{ .Values.mariadb.db.user | quote }};
+  {{- else }}
+    $CDASH_DB_LOGIN = {{ .Values.externalDatabase.user | quote }};
+  {{- end }}
+  {{- if .Values.mariadb.enabled }}
+    $CDASH_DB_PASS = {{ .Values.mariadb.db.password | quote }};
+  {{- else }}
+    $CDASH_DB_PASS = {{ .Values.externalDatabase.password | quote }};
+  {{- end }}

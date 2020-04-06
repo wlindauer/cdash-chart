@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cdash.fullname" . }}
+  labels:
+    {{- include "cdash.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "cdash.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cdash.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "cdash.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: {{ include "cdash.fullname" . }}
+          env:
+            - name: CDASH_ROOT_ADMIN_EMAIL
+              value: {{ .Values.cdashAdminEmail | quote }}
+            - name: CDASH_ROOT_ADMIN_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cdash.fullname" . }}
+                  key: cdash-password
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      initContainers:
+        - name: {{ .Chart.Name }}-wait
+          image: busybox
+        {{- if .Values.mariadb.enabled }}
+          command: ['sh', '-c', 'until nc -z -w1 {{ include "mariadb.fullname" . }} {{ .Values.mariadb.service.port }}; do echo waiting for {{ include "mariadb.fullname" . }}; sleep 2; done;']
+        {{- else }}
+          command: ['sh', '-c', 'until nc -z -w1 {{ .Values.externalDatabase.host }} {{ .Values.externalDatabase.port }}; do echo waiting for {{ .Values.externalDatabase.host }}; sleep 2; done;']
+        {{- end }}
+        - name: {{ .Chart.Name }}-init
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          args: ["install", "configure"]
+          envFrom:
+          - configMapRef:
+              name: {{ include "cdash.fullname" . }}
+          env:
+            - name: CDASH_ROOT_ADMIN_EMAIL
+              value: {{ .Values.cdashAdminEmail | quote }}
+            - name: CDASH_ROOT_ADMIN_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cdash.fullname" . }}
+                  key: cdash-password
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

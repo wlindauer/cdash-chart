@@ -1,0 +1,22 @@
+apiVersion: v2
+name: cdash
+description: CDash is an open source, web-based software testing server
+type: application
+version: 0.1.0
+appVersion: v2.6.0
+keywords:
+  - cdash
+home: https://www.cdash.org
+icon: https://www.kitware.com/cdash/img/CDash-JPEG.jpg
+sources:
+  - https://github.com/Kitware/CDash
+maintainers:
+  - name: Wes Lindauer
+    email: wesley.lindauer@gmail.com
+dependencies:
+  - name: mariadb
+    version: 7.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: mariadb.enabled
+    tags:
+      - database
