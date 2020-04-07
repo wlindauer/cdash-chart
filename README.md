@@ -1,37 +1,43 @@
-## Welcome to GitHub Pages
+# CDash Helm Chart
+Helm chart for deploying a [CDash](https://cdash.org) testing server to Kubernetes.
 
-You can use the [editor on GitHub](https://github.com/wlindauer/cdash-chart/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+## Introduction
+[CDash](https://cdash.org) is an open source, web-based software testing server. CDash aggregates, analyzes and displays the results of software testing processes submitted from clients located around the world. Developers depend on CDash to convey the state of a software system, and to continually improve its quality.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+CDash is a part of a larger software process that integrates [Kitware’s](https://www.kitware.com/platforms/#cmake) [CMake](https://cmake.org), CTest, and CPack tools.
 
-### Markdown
+## Installation
+### Prerequisites
+The CDash chart requires [Helm v3](https://helm.sh). You can install Helm using package managers like
+```
+brew install helm
+sudo snap install helm --classic
+```
+If you are still using Helm v2, you will need to [migrate](https://helm.sh/docs/topics/v2_v3_migration/) first.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+### Setup
+Once you have Helm ready, you can add the chart repository.
+```
+helm repo add cdash https://wlindauer.github.io/cdash-chart
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+### Install
+To install using default values
+```
+helm install cdash cdash/cdash
+```
+If you are using minikube you might want to override the service type to `NodePort`.
+```
+helm install cdash cdash/cdash --set service.type=NodePort
+```
+To see the availiable values that are configurable and their defaults
+```
+helm show values cdash/cdash
+```
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/wlindauer/cdash-chart/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+### Uninstall
+To remove the release and chart repository
+```
+helm delete cdash
+helm repo remove cdash
+```
