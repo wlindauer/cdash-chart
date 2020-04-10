@@ -3,6 +3,32 @@ entries:
   cdash:
   - apiVersion: v2
     appVersion: v2.6.0
+    created: "2020-04-10T17:07:11.923697-04:00"
+    dependencies:
+    - condition: mariadb.enabled
+      name: mariadb
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - database
+      version: 7.x.x
+    description: CDash is an open source, web-based software testing server
+    digest: 842dbed0f5f7c7b8c9b463c36c6ebad9bb0433eb033341bfd08b72785df1c3f2
+    home: https://www.cdash.org
+    icon: https://www.kitware.com/cdash/img/CDash-JPEG.jpg
+    keywords:
+    - cdash
+    maintainers:
+    - email: wesley.lindauer@gmail.com
+      name: Wes Lindauer
+    name: cdash
+    sources:
+    - https://github.com/Kitware/CDash
+    type: application
+    urls:
+    - https://github.com/wlindauer/cdash-chart/releases/download/v0.2.0/cdash-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: v2.6.0
     created: "2020-04-06T14:54:34.949743-04:00"
     dependencies:
     - condition: mariadb.enabled
@@ -27,4 +53,4 @@ entries:
     urls:
     - https://github.com/wlindauer/cdash-chart/releases/download/v0.1.0/cdash-0.1.0.tgz
     version: 0.1.0
-generated: "2020-04-06T14:54:34.940577-04:00"
+generated: "2020-04-10T17:07:11.917924-04:00"
