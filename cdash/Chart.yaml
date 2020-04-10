@@ -2,7 +2,7 @@ apiVersion: v2
 name: cdash
 description: CDash is an open source, web-based software testing server
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: v2.6.0
 keywords:
   - cdash

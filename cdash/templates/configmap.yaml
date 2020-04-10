@@ -31,3 +31,10 @@ data:
   {{- else }}
     $CDASH_DB_PASS = {{ .Values.externalDatabase.password | quote }};
   {{- end }}
+  {{- if .Values.ldap.enabled }}
+    $CDASH_USE_LDAP = '1';
+    $CDASH_LDAP_HOSTNAME = {{ .Values.ldap.hostname | quote }};
+    $CDASH_LDAP_BASEDN = {{ .Values.ldap.basedn | quote }};
+    $CDASH_LDAP_PROTOCOL_VERSION = {{ .Values.ldap.version | quote }};
+    $CDASH_NO_REGISTRATION = '1';
+  {{- end }}

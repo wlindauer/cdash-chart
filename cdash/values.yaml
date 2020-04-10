@@ -64,6 +64,12 @@ mariadb:
   service:
     port: 3306
 
+ldap:
+  enabled: false
+  hostname: localhost
+  basedn: ou=people,dc=organization,dc=com
+  version: 3
+
 service:
   type: ClusterIP
   port: 80
